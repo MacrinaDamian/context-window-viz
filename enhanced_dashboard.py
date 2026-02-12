@@ -327,11 +327,44 @@ class EnhancedContextDashboard:
         renderables.append(self.create_category_table())
         renderables.append(Text())
 
-        # MCP Tools section
+        # MCP Tools section - grouped by server
         if stats['mcp_tools']:
             renderables.append(Text("MCP tools", style="bold"))
-            for tool, count in sorted(stats['mcp_tools'].items())[:10]:
-                renderables.append(Text(f"  └ {tool}: {count} calls", style="dim"))
+
+            # Group tools by server type
+            servers = {}
+            for tool, count in stats['mcp_tools'].items():
+                # Extract server name: mcp__server__tool_name
+                parts = tool.split('__')
+                if len(parts) >= 3:
+                    server = parts[1]  # Get the server name
+                    # Clean up server name for display
+                    if server == 'claude_ai_Figma':
+                        server_display = 'Claude.ai Figma'
+                    else:
+                        server_display = server.replace('_', ' ').title()
+
+                    if server_display not in servers:
+                        servers[server_display] = []
+                    servers[server_display].append((tool, count))
+
+            # Display grouped by server
+            for server_name in sorted(servers.keys()):
+                tools = servers[server_name]
+                total_calls = sum(count for _, count in tools)
+                tool_count = len(tools)
+
+                renderables.append(Text(f"  {server_name} ({tool_count} tools, {total_calls} calls)", style="rgb(0,157,154)"))
+
+                # Show top 5 tools per server
+                for tool, count in sorted(tools, key=lambda x: x[1], reverse=True)[:5]:
+                    # Show just the tool name without the mcp__server__ prefix
+                    tool_name = tool.split('__', 2)[2] if len(tool.split('__')) >= 3 else tool
+                    renderables.append(Text(f"    └ {tool_name}: {count} calls", style="dim"))
+
+                if len(tools) > 5:
+                    renderables.append(Text(f"    └ ...and {len(tools) - 5} more", style="dim italic"))
+
             renderables.append(Text())
 
         # System Tools section
