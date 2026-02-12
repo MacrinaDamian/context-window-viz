@@ -1,0 +1,7 @@
+#!/bin/bash
+# Context Window Dashboard Launcher
+
+cd "$(dirname "$0")"
+
+# Use enhanced dashboard by default
+python3 enhanced_dashboard.py
