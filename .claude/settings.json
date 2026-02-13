@@ -1,9 +1,0 @@
-{
-  "hooks": {
-    "PreCommit": [
-      {
-        "command": "bash -c 'git status --porcelain | grep -E \"\\.DS_Store|Thumbs\\.db\" && echo \"WARNING: System files staged!\" && exit 1 || true'"
-      }
-    ]
-  }
-}
