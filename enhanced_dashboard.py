@@ -310,14 +310,13 @@ class EnhancedContextDashboard:
         renderables = []
 
         # Header
-        renderables.append(Panel(
-            Text("Context Usage", style="bold white"),
-            style="blue"
-        ))
+        renderables.append(Text("Context Usage", style="bold white"))
+        renderables.append(Text())  # Add spacing
 
         # Progress bar
         bar = self.create_colored_progress_bar(50)
         renderables.append(bar)
+        renderables.append(Text())
 
         # Usage line
         renderables.append(Text(f"{stats['model']} · {self.format_number(current)}/{self.format_number(max_tokens)} tokens ({used_pct:.1f}%)\n", style="dim"))
